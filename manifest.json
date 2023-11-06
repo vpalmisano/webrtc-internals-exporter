@@ -1,0 +1,45 @@
+{
+  "name": "WebRTC Internals Exporter",
+  "description": "WebRTC Internals Exporter",
+  "author": "Vittorio Palmisano",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "options_ui": {
+    "page": "index.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "js": ["content-script.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["override.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
+}
