@@ -4,17 +4,21 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import loadVersion from "vite-plugin-package-version";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), loadVersion()],
+  plugins: [loadVersion(), vue()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   build: {
-    outDir: "../dist",
+    outDir: "../build",
+    emptyOutDir: false,
     rollupOptions: {
+      input: {
+        options: "options.html",
+        popup: "popup.html",
+      },
       output: {
         assetFileNames: "assets/[name][extname]",
       },

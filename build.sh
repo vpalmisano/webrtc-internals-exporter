@@ -1,13 +1,14 @@
 #!/bin/bash
 set -ex
 
-NAME=webrtc-internals-pushgateway-exporter
+NAME=webrtc-internals-exporter
+OUTDIR=build
 
-rm -rf dist && cd app && yarn && yarn build && cd -
+cd app && yarn && yarn build && cd -
 
-version=$(jq -r '.version' app/package.json)
-jq ".version = \"${version}\"" manifest.json > dist/manifest.json
-cp -r images app/background.js app/content-script.js app/override.js manifest.json README.md dist
-cp app/node_modules/pako/dist/pako.min.js dist/assets
+npm_package_version=$(jq -r '.version' app/package.json)
+jq ".version = \"${npm_package_version}\"" manifest.json > ${OUTDIR}/manifest.json
+cp -r images app/background.js app/content-script.js app/override.js manifest.json README.md ${OUTDIR}
+cp app/node_modules/pako/dist/pako.min.js ${OUTDIR}/assets
 
-# zip ${NAME}_v${version}.zip -r dist
+zip ${NAME}_v${npm_package_version}.zip -r ${OUTDIR}

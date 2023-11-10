@@ -4,7 +4,7 @@
     "name": "Vittorio Palmisano",
     "url": "https://github.com/vpalmisano"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
@@ -21,12 +21,16 @@
     "events": "^3.3.0",
     "pako": "^2.1.0",
     "util": "^0.12.4",
-    "vue": "^3.3.7"
+    "vue": "^3.3.8",
+    "vuetify": "^3.3.23"
   },
   "devDependencies": {
+    "@mdi/font": "^7.3.67",
     "@rushstack/eslint-patch": "^1.1.4",
     "@vitejs/plugin-vue": "^4.4.0",
     "@vue/eslint-config-prettier": "^8.0.0",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "eslint": "^8.52.0",
     "eslint-plugin-vue": "^9.18.1",
     "prettier": "^3.0.3",

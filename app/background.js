@@ -10,9 +10,13 @@ import "/assets/pako.min.js";
 
 const DEFAULT_OPTIONS = {
   url: "http://localhost:9091",
-  auth: "user:pass",
+  username: "",
+  password: "",
+  updateInterval: 2,
   gzip: false,
   job: "webrtc-internals-exporter",
+  labels: "",
+  enabledOrigins: {},
   stats: {
     messagesSent: 0,
     bytesSent: 0,
@@ -34,13 +38,29 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
 });
 
+let enabledOrigins = {};
+
+chrome.storage.local.get("enabledOrigins").then((options) => {
+  enabledOrigins = options.enabledOrigins;
+});
+
+chrome.storage.onChanged.addListener((changes) => {
+  for (let [key, { newValue }] of Object.entries(changes)) {
+    if (key === "enabledOrigins") {
+      enabledOrigins = newValue;
+    }
+  }
+});
+
 async function sendData(data) {
-  const { url, auth, gzip, job, stats } = await chrome.storage.local.get();
+  const { url, username, password, gzip, job, stats } =
+    await chrome.storage.local.get();
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
   };
-  if (auth) {
-    headers.Authorization = "Basic " + base64.encode(auth);
+  if (username && password) {
+    headers.Authorization =
+      "Basic " + base64.encode(`${username}:${password}}`);
   }
   if (gzip) {
     headers["Content-Encoding"] = "gzip";
@@ -79,12 +99,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.event === "peer-connection-stats") {
     // log("peer-connection-stats", message.data);
     const { url, id, state, values } = message.data;
+
+    const origin = new URL(url).origin;
+    if (enabledOrigins[origin] !== true) {
+      sendResponse({});
+      return;
+    }
+
     let data = "";
     const sentTypes = new Set();
+
     values.forEach((value) => {
       const type = value.type.replace(/-/g, "_");
       const labels = [`pageUrl="${url}",peerConnectionId="${id}"`];
       const metrics = [];
+
       Object.entries(value).forEach(([key, v]) => {
         if (typeof v === "number") {
           metrics.push([key, v]);
@@ -99,13 +128,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           QualityLimitationReasons[v] !== undefined
         ) {
           metrics.push([key, QualityLimitationReasons[v]]);
+        } else if (key === "googTimingFrameInfo") {
+          //
         } else {
           labels.push(`${key}="${v}"`);
         }
       });
+
       metrics.forEach(([key, v]) => {
         const name = `${type}_${key.replace(/-/g, "_")}`;
         let typeDesc = "";
+
         if (!sentTypes.has(name)) {
           typeDesc = `# TYPE ${name} gauge\n`;
           sentTypes.add(name);
@@ -123,10 +156,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           sendResponse({ error: err.message });
         });
     } else {
-      sendResponse();
+      sendResponse({});
     }
   } else {
     sendResponse({ error: "unknown event" });
   }
+
   return true;
 });

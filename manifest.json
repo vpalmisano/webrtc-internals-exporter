@@ -10,14 +10,20 @@
     "128": "images/icon128.png"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
   ],
   "host_permissions": [
     "http://*/*",
     "https://*/*"
   ],
+  "action": {
+    "default_title": "WebRTC Internals Exporter",
+    "default_popup": "popup.html"
+  },
   "options_ui": {
-    "page": "index.html",
+    "page": "options.html",
     "open_in_tab": true
   },
   "content_scripts": [
