@@ -89,7 +89,7 @@ async function cleanupPeerConnections() {
   await Promise.allSettled(
     Object.entries(peerConnectionsLastUpdate)
       .map(([id, lastUpdate]) => {
-        if (now - lastUpdate > Math.max(2 * updateInterval, 60) * 1000) {
+        if (now - lastUpdate > Math.max(2 * updateInterval, 30) * 1000) {
           return id;
         }
       })
