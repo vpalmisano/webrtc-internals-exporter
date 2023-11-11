@@ -59,7 +59,6 @@ chrome.storage.onChanged.addListener((changes) => {
 window.addEventListener("message", async (message) => {
   const { event, url, id, state, values } = message.data;
   if (event === "webrtc-internal-exporter:ready") {
-    log("ready");
     sendOptions();
   } else if (event === "webrtc-internal-exporter:peer-connection-stats") {
     log("peer-connection-stats", { url, id, state, values });

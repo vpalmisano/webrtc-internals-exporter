@@ -13,7 +13,7 @@ export default defineConfig({
   },
   build: {
     outDir: "../build",
-    emptyOutDir: false,
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         options: "options.html",
