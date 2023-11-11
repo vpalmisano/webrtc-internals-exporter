@@ -2,6 +2,12 @@
 A Chromium browser extension that allows to collect WebRTC stats and export them to a Prometheus PushGateway service.
 
 ## Install
+
+### Using packed extension
+Download the `.crx` file from the [releases page](https://github.com/vpalmisano/webrtc-internals-exporter/releases) and drop it
+into the [chrome://extensions/](chrome://extensions/) page.
+
+### From sources
 Run the `./build.sh` script and load the `build` folder as an unpacked extension in your Chromium browser.
 
 ## Usage
