@@ -37,7 +37,7 @@ async function saveOptions(value) {
 }
 
 chrome.tabs
-  .query({ active: true, currentWindow: true })
+  ?.query({ active: true, currentWindow: true })
   .then((tabs) => {
     const tab = tabs[0];
     return chrome.scripting.executeScript({
@@ -60,8 +60,13 @@ chrome.tabs
 </script>
 
 <template>
-  <v-layout class="rounded rounded-md">
-    <v-app-bar title="WebRTC Internals Exporter"></v-app-bar>
+  <v-layout>
+    <v-app-bar
+      title="WebRTC Internals Exporter"
+      color="primary"
+      density="compact"
+    >
+    </v-app-bar>
 
     <v-main class="d-flex align-center justify-left" style="min-width: 20rem">
       <v-container>
@@ -74,7 +79,7 @@ chrome.tabs
             ></v-alert>
 
             <v-checkbox
-              color="primary"
+              color="indigo"
               v-model="state.enabled"
               :label="'Enable for ' + state.origin"
               @update:model-value="saveOptions"
@@ -82,9 +87,26 @@ chrome.tabs
             ></v-checkbox>
           </v-col>
         </v-row>
+
+        <v-row>
+          <v-col cols="12" md="12">
+            <a class="version"
+              href="https://github.com/vpalmisano/webrtc-internals-exporter"
+              target="_blank"
+              title="Homepage"
+              >v{{ state.version }}</a
+            >
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
   </v-layout>
 </template>
 
-<style scoped></style>
+<style scoped>
+.version {
+  font-size: smaller;
+  text-decoration: none;
+}
+</style>
+

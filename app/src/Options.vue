@@ -18,7 +18,6 @@ const state = reactive({
   updateInterval: 2,
   gzip: false,
   job: "webrtc-internals-exporter",
-  labels: "",
   enabledOrigins: {},
   enabledOriginsTableHeaders: [
     {
@@ -67,7 +66,6 @@ async function loadOptions() {
       updateInterval: 2,
       gzip: false,
       job: "webrtc-internals-exporter",
-      labels: "",
       enabledOrigins: { "http://localhost": true, "https://localhost": true },
     });
   }
@@ -82,9 +80,9 @@ async function saveOptions() {
       url: state.url,
       username: state.username,
       password: state.password,
+      updateInterval: state.updateInterval,
       gzip: state.gzip,
       job: state.job,
-      labels: state.labels,
       enabledOrigins: state.enabledOrigins,
     });
   } else {
@@ -106,9 +104,21 @@ function removeOrigin(item) {
 </script>
 
 <template>
-  <v-layout class="rounded rounded-md">
-    <v-app-bar title="WebRTC Internals Exporter Options">
-      <small class="version">v{{ state.version }}</small>
+  <v-layout>
+    <v-app-bar
+      title="WebRTC Internals Exporter"
+      color="primary"
+      density="compact"
+    >
+      <template v-slot:append>
+        <small class="version">v{{ state.version }}</small>
+        <a
+          href="https://github.com/vpalmisano/webrtc-internals-exporter"
+          target="_blank"
+          title="Homepage"
+          ><v-btn icon="mdi-github" size="small" color="grey"></v-btn>
+        </a>
+      </template>
     </v-app-bar>
 
     <v-main class="d-flex align-center justify-left" style="min-height: 300px">
@@ -190,15 +200,6 @@ function removeOrigin(item) {
                   clearable
                 ></v-text-field>
               </v-col>
-
-              <v-col cols="12" md="12">
-                <v-textarea
-                  color="primary"
-                  v-model="state.labels"
-                  label="Pushgateway additional labels"
-                  clearable
-                ></v-textarea>
-              </v-col>
             </v-row>
 
             <v-row>
@@ -239,7 +240,6 @@ function removeOrigin(item) {
 
 <style scoped>
 .version {
-  padding-right: 12px;
   text-decoration: none;
 }
 </style>

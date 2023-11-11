@@ -15,7 +15,6 @@ const DEFAULT_OPTIONS = {
   updateInterval: 2,
   gzip: false,
   job: "webrtc-internals-exporter",
-  labels: "",
   enabledOrigins: {},
   stats: {
     messagesSent: 0,
@@ -25,6 +24,7 @@ const DEFAULT_OPTIONS = {
   },
 };
 
+// Handle install/update.
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   log("onInstalled", reason);
   if (reason === "install") {
@@ -38,20 +38,7 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   }
 });
 
-let enabledOrigins = {};
-
-chrome.storage.local.get("enabledOrigins").then((options) => {
-  enabledOrigins = options.enabledOrigins;
-});
-
-chrome.storage.onChanged.addListener((changes) => {
-  for (let [key, { newValue }] of Object.entries(changes)) {
-    if (key === "enabledOrigins") {
-      enabledOrigins = newValue;
-    }
-  }
-});
-
+// Send data to pushgateway.
 async function sendData(data) {
   const { url, username, password, gzip, job, stats } =
     await chrome.storage.local.get();
@@ -100,12 +87,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // log("peer-connection-stats", message.data);
     const { url, id, state, values } = message.data;
 
-    const origin = new URL(url).origin;
-    if (enabledOrigins[origin] !== true) {
-      sendResponse({});
-      return;
-    }
-
     let data = "";
     const sentTypes = new Set();
 
@@ -129,7 +110,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         ) {
           metrics.push([key, QualityLimitationReasons[v]]);
         } else if (key === "googTimingFrameInfo") {
-          //
+          // TODO
         } else {
           labels.push(`${key}="${v}"`);
         }

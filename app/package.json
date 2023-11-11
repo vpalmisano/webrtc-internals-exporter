@@ -4,7 +4,7 @@
     "name": "Vittorio Palmisano",
     "url": "https://github.com/vpalmisano"
   },
-  "version": "0.1.1",
+  "version": "0.1.4",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },

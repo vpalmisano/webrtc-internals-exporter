@@ -2,12 +2,72 @@ function log(...args) {
   console.log.apply(null, ["[webrtc-internal-exporter-override]", ...args]);
 }
 
-const PeerConnections = new Map();
-
 log("Override RTCPeerConnection.");
 
 const NativeRTCPeerConnection = window.RTCPeerConnection;
-let peerConnectionNextId = 0;
+
+class WebrtcInternalExporter {
+  peerConnections = new Map();
+  peerConnectionNextId = 0;
+
+  enabled = false;
+  updateInterval = 2000;
+
+  constructor() {
+    window.addEventListener("message", async (message) => {
+      const { event, options } = message.data;
+      if (event === "webrtc-internal-exporter:options") {
+        log("options updated:", options);
+        Object.assign(this, options);
+      }
+    });
+
+    window.postMessage({ event: "webrtc-internal-exporter:ready" });
+  }
+
+  add(pc) {
+    const id = this.peerConnectionNextId++;
+    this.peerConnections.set(id, pc);
+    pc.addEventListener("connectionstatechange", () => {
+      if (pc.connectionState === "closed") {
+        this.peerConnections.delete(id);
+      }
+    });
+    this.collectStats(id);
+  }
+
+  async collectStats(id) {
+    const pc = this.peerConnections.get(id);
+    if (!pc) return;
+
+    if (this.enabled) {
+      try {
+        const stats = await pc.getStats();
+        const values = [...stats.values()];
+        window.postMessage(
+          {
+            event: "webrtc-internal-exporter:peer-connection-stats",
+            url: window.location.href,
+            id,
+            state: pc.connectionState,
+            values,
+          },
+          [values],
+        );
+      } catch (error) {
+        log(`collectStats error: ${error.message}`);
+      }
+    }
+
+    if (pc.connectionState === "closed") {
+      this.peerConnections.delete(id);
+    } else {
+      setTimeout(this.collectStats.bind(this), this.updateInterval, id);
+    }
+  }
+}
+
+const webrtcInternalExporter = new WebrtcInternalExporter();
 
 window.RTCPeerConnection = function (options) {
   log(`RTCPeerConnection`, options);
@@ -16,35 +76,7 @@ window.RTCPeerConnection = function (options) {
     ...options,
   });
 
-  const id = peerConnectionNextId++;
-  PeerConnections.set(id, pc);
-
-  const statsInterval = setInterval(async () => {
-    const stats = await pc.getStats();
-    const values = [...stats.values()];
-    window.postMessage(
-      {
-        event: "webrtc-internal-exporter:peer-connection-stats",
-        url: window.location.href,
-        id,
-        state: pc.connectionState,
-        values,
-      },
-      [values],
-    );
-    if (pc.connectionState === "closed") {
-      clearInterval(statsInterval);
-      PeerConnections.delete(id);
-    }
-  }, 2000);
-
-  pc.addEventListener("connectionstatechange", () => {
-    if (pc.connectionState === "closed") {
-      log(`RTCPeerConnection closed (connectionState: ${pc.connectionState})`);
-      clearInterval(statsInterval);
-      PeerConnections.delete(id);
-    }
-  });
+  webrtcInternalExporter.add(pc);
 
   return pc;
 };
