@@ -2818,7 +2818,7 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "label_values(media_source_timestamp,pageUrl)",
+        "definition": "label_values(peer_connection_timestamp,pageUrl)",
         "hide": 0,
         "includeAll": false,
         "label": "URL",
@@ -2826,7 +2826,7 @@
         "name": "pageUrl",
         "options": [],
         "query": {
-          "query": "label_values(media_source_timestamp,pageUrl)",
+          "query": "label_values(peer_connection_timestamp,pageUrl)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
@@ -2842,7 +2842,7 @@
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
-        "definition": "query_result(inbound_rtp_bytesReceived or outbound_rtp_bytesSent)",
+        "definition": "label_values(peer_connection_timestamp,peerConnectionId)",
         "hide": 0,
         "includeAll": true,
         "label": "PeerConnection",
@@ -2850,11 +2850,11 @@
         "name": "peerConnectionId",
         "options": [],
         "query": {
-          "query": "query_result(inbound_rtp_bytesReceived or outbound_rtp_bytesSent)",
+          "query": "label_values(peer_connection_timestamp,peerConnectionId)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
-        "regex": "/.+?peerConnectionId=\"(?<value>.+?)\"/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 1,
         "type": "query"
@@ -2869,6 +2869,6 @@
   "timezone": "",
   "title": "WebRTC Internals Exporter",
   "uid": "d4c89332-e158-488c-b5ba-b7fd9b2fa7f3",
-  "version": 47,
+  "version": 52,
   "weekStart": ""
 }

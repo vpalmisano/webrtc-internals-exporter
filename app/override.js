@@ -8,10 +8,11 @@ const NativeRTCPeerConnection = window.RTCPeerConnection;
 
 class WebrtcInternalExporter {
   peerConnections = new Map();
-  peerConnectionNextId = 0;
 
+  url = "";
   enabled = false;
   updateInterval = 2000;
+  enabledStats = [];
 
   constructor() {
     window.addEventListener("message", async (message) => {
@@ -25,8 +26,14 @@ class WebrtcInternalExporter {
     window.postMessage({ event: "webrtc-internal-exporter:ready" });
   }
 
+  randomId() {
+    return (
+      window.crypto?.randomUUID() || (2 ** 64 * Math.random()).toString(16)
+    );
+  }
+
   add(pc) {
-    const id = this.peerConnectionNextId++;
+    const id = this.randomId();
     this.peerConnections.set(id, pc);
     pc.addEventListener("connectionstatechange", () => {
       if (pc.connectionState === "closed") {
@@ -40,10 +47,13 @@ class WebrtcInternalExporter {
     const pc = this.peerConnections.get(id);
     if (!pc) return;
 
-    if (this.enabled) {
+    if (this.url && this.enabled) {
       try {
         const stats = await pc.getStats();
-        const values = [...stats.values()];
+        const values = [...stats.values()].filter(
+          (v) =>
+            ["peer-connection", ...this.enabledStats].indexOf(v.type) !== -1,
+        );
         window.postMessage(
           {
             event: "webrtc-internal-exporter:peer-connection-stats",

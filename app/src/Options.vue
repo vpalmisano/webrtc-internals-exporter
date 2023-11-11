@@ -19,6 +19,8 @@ const state = reactive({
   gzip: false,
   job: "webrtc-internals-exporter",
   enabledOrigins: {},
+  enabledStats: ["inbound-rtp", "remote-inbound-rtp", "outbound-rtp"],
+  //
   enabledOriginsTableHeaders: [
     {
       title: "Enabled URL Origins",
@@ -26,6 +28,20 @@ const state = reactive({
       align: "start",
       sortable: true,
     },
+  ],
+  statsTypes: [
+    "candidate-pair",
+    "codec",
+    "data-channel",
+    "inbound-rtp",
+    "local-candidate",
+    "media-playout",
+    "media-source",
+    "outbound-rtp",
+    "remote-candidate",
+    "remote-inbound-rtp",
+    "track",
+    "transport",
   ],
 });
 
@@ -56,18 +72,9 @@ const v$ = useVuelidate(rules, state);
 async function loadOptions() {
   if (chrome.storage) {
     const options = await chrome.storage.local.get();
+    options.enabledStats = Object.values(options.enabledStats || {});
     Object.assign(state, options);
     state.valid = true;
-  } else {
-    Object.assign(state, {
-      url: "http://localhost:9091",
-      username: "",
-      password: "",
-      updateInterval: 2,
-      gzip: false,
-      job: "webrtc-internals-exporter",
-      enabledOrigins: { "http://localhost": true, "https://localhost": true },
-    });
   }
 }
 
@@ -84,6 +91,7 @@ async function saveOptions() {
       gzip: state.gzip,
       job: state.job,
       enabledOrigins: state.enabledOrigins,
+      enabledStats: state.enabledStats,
     });
   } else {
     console.log("saveOptions", state);
@@ -199,6 +207,17 @@ function removeOrigin(item) {
                   label="Pushgateway job name"
                   clearable
                 ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="12">
+                <v-select
+                  v-model="state.enabledStats"
+                  :items="state.statsTypes"
+                  chips
+                  label="Enabled PeerConnection stats"
+                  multiple
+                  clearable
+                ></v-select>
               </v-col>
             </v-row>
 

@@ -1,8 +1,12 @@
 /* global chrome */
 
 function log(...args) {
-  if (localStorage.getItem("webrtc-internal-exporter:debug") === "true") {
-    console.log.apply(null, ["[webrtc-internal-exporter]", ...args]);
+  try {
+    if (localStorage.getItem("webrtc-internal-exporter:debug") === "true") {
+      console.log.apply(null, ["[webrtc-internal-exporter]", ...args]);
+    }
+  } catch (error) {
+    // Ignore localStorage errors.
   }
 }
 
@@ -14,14 +18,13 @@ function injectScript(file_path) {
   head.appendChild(script);
 }
 
-setTimeout(() => {
-  injectScript(chrome.runtime.getURL("override.js"));
-});
+setTimeout(() => injectScript(chrome.runtime.getURL("override.js")));
 
 // Handle options.
 const options = {
   enabled: false,
   updateInterval: 2000,
+  enabledStats: [],
 };
 
 function sendOptions() {
@@ -31,21 +34,31 @@ function sendOptions() {
   });
 }
 
-chrome.storage.local.get(["enabledOrigins", "updateInterval"]).then((ret) => {
-  log(`options loaded:`, ret);
-  options.enabled = ret.enabledOrigins[window.location.origin] === true;
-  options.updateInterval = ret.updateInterval * 1000;
-  sendOptions();
-});
+chrome.storage.local
+  .get(["url", "enabledOrigins", "updateInterval", "enabledStats"])
+  .then((ret) => {
+    log(`options loaded:`, ret);
+    options.url = ret.url;
+    options.enabled = ret.enabledOrigins[window.location.origin] === true;
+    options.updateInterval = ret.updateInterval * 1000;
+    options.enabledStats = Object.values(ret.enabledStats);
+    sendOptions();
+  });
 
 chrome.storage.onChanged.addListener((changes) => {
   let changed = false;
   for (let [key, { newValue }] of Object.entries(changes)) {
-    if (key === "enabledOrigins") {
+    if (key === "url") {
+      options.url = newValue;
+      changed = true;
+    } else if (key === "enabledOrigins") {
       options.enabled = newValue[window.location.origin] === true;
       changed = true;
     } else if (key === "updateInterval") {
       options.updateInterval = newValue * 1000;
+      changed = true;
+    } else if (key === "enabledStats") {
+      options.enabledStats = Object.values(newValue);
       changed = true;
     }
   }
