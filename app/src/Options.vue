@@ -71,7 +71,7 @@ const v$ = useVuelidate(rules, state);
 
 async function loadOptions() {
   if (chrome.storage) {
-    const options = await chrome.storage.local.get();
+    const options = await chrome.storage.sync.get();
     options.enabledStats = Object.values(options.enabledStats || {});
     Object.assign(state, options);
     state.valid = true;
@@ -83,7 +83,7 @@ async function saveOptions() {
     return;
   }
   if (chrome.storage) {
-    await chrome.storage.local.set({
+    await chrome.storage.sync.set({
       url: state.url,
       username: state.username,
       password: state.password,

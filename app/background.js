@@ -17,22 +17,18 @@ const DEFAULT_OPTIONS = {
   job: "webrtc-internals-exporter",
   enabledOrigins: {},
   enabledStats: ["inbound-rtp", "remote-inbound-rtp", "outbound-rtp"],
-  stats: {
-    messagesSent: 0,
-    bytesSent: 0,
-    totalTime: 0,
-    errors: 0,
-  },
 };
+
+const options = {};
 
 // Handle install/update.
 chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   log("onInstalled", reason);
   if (reason === "install") {
-    await chrome.storage.local.set(DEFAULT_OPTIONS);
+    await chrome.storage.sync.set(DEFAULT_OPTIONS);
   } else if (reason === "update") {
-    const options = await chrome.storage.local.get();
-    await chrome.storage.local.set({
+    const options = await chrome.storage.sync.get();
+    await chrome.storage.sync.set({
       ...DEFAULT_OPTIONS,
       ...options,
     });
@@ -44,6 +40,66 @@ chrome.runtime.onInstalled.addListener(async ({ reason }) => {
   });
 });
 
+async function updateTabInfo(tab) {
+  const tabId = tab.id;
+  const origin = new URL(tab.url || tab.pendingUrl).origin;
+
+  if (options.enabledOrigins && options.enabledOrigins[origin] === true) {
+    const { peerConnectionsPerOrigin } = await chrome.storage.local.get(
+      "peerConnectionsPerOrigin",
+    );
+    const peerConnections =
+      (peerConnectionsPerOrigin && peerConnectionsPerOrigin[origin]) || 0;
+
+    chrome.action.setTitle({
+      title: `WebRTC Internals Exporter\nActive Peer Connections: ${peerConnections}`,
+      tabId,
+    });
+    chrome.action.setBadgeText({ text: `${peerConnections}`, tabId });
+    chrome.action.setBadgeBackgroundColor({ color: "rgb(63, 81, 181)", tabId });
+  } else {
+    chrome.action.setTitle({
+      title: `WebRTC Internals Exporter (disabled)`,
+      tabId,
+    });
+    chrome.action.setBadgeText({ text: "", tabId });
+  }
+}
+
+async function optionsUpdated() {
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    lastFocusedWindow: true,
+  });
+  await updateTabInfo(tab);
+}
+
+chrome.storage.sync.get().then((ret) => {
+  Object.assign(options, ret);
+  log("options loaded");
+  optionsUpdated();
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName !== "sync") return;
+
+  for (let [key, { newValue }] of Object.entries(changes)) {
+    options[key] = newValue;
+  }
+  log("options changed");
+  optionsUpdated();
+});
+
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  const tab = await chrome.tabs.get(tabId);
+  await updateTabInfo(tab);
+});
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+  if (!changeInfo.url) return;
+  await updateTabInfo({ id: tabId, url: changeInfo.url });
+});
+
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "webrtc-internals-exporter-alarm") {
     cleanupPeerConnections().catch((err) => {
@@ -52,7 +108,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   }
 });
 
-async function setPeerConnectionLastUpdate(id, lastUpdate = 0) {
+async function setPeerConnectionLastUpdate({ id, origin }, lastUpdate = 0) {
   let { peerConnectionsLastUpdate } = await chrome.storage.local.get(
     "peerConnectionsLastUpdate",
   );
@@ -60,19 +116,27 @@ async function setPeerConnectionLastUpdate(id, lastUpdate = 0) {
     peerConnectionsLastUpdate = {};
   }
   if (lastUpdate) {
-    peerConnectionsLastUpdate[id] = lastUpdate;
+    peerConnectionsLastUpdate[id] = { origin, lastUpdate };
   } else {
     delete peerConnectionsLastUpdate[id];
   }
   await chrome.storage.local.set({ peerConnectionsLastUpdate });
+
+  const peerConnectionsPerOrigin = {};
+  Object.values(peerConnectionsLastUpdate).forEach(({ origin: o }) => {
+    if (!peerConnectionsPerOrigin[o]) {
+      peerConnectionsPerOrigin[o] = 0;
+    }
+    peerConnectionsPerOrigin[o]++;
+  });
+  await chrome.storage.local.set({ peerConnectionsPerOrigin });
+  await optionsUpdated();
 }
 
 async function cleanupPeerConnections() {
-  let { peerConnectionsLastUpdate, updateInterval } =
-    await chrome.storage.local.get([
-      "peerConnectionsLastUpdate",
-      "updateInterval",
-    ]);
+  let { peerConnectionsLastUpdate } = await chrome.storage.local.get(
+    "peerConnectionsLastUpdate",
+  );
   if (
     !peerConnectionsLastUpdate ||
     !Object.keys(peerConnectionsLastUpdate).length
@@ -88,23 +152,25 @@ async function cleanupPeerConnections() {
   const now = Date.now();
   await Promise.allSettled(
     Object.entries(peerConnectionsLastUpdate)
-      .map(([id, lastUpdate]) => {
-        if (now - lastUpdate > Math.max(2 * updateInterval, 30) * 1000) {
-          return id;
+      .map(([id, { origin, lastUpdate }]) => {
+        if (
+          now - lastUpdate >
+          Math.max(2 * options.updateInterval, 30) * 1000
+        ) {
+          return { id, origin };
         }
       })
-      .filter((id) => !!id)
-      .map((id) => {
-        log(`removing stale peer connection metrics: ${id}`);
-        return sendData("DELETE", id);
+      .filter((ret) => !!ret?.id)
+      .map(({ id, origin }) => {
+        log(`removing stale peer connection metrics: ${id} ${origin}`);
+        return sendData("DELETE", { id, origin });
       }),
   );
 }
 
 // Send data to pushgateway.
-async function sendData(method, id, data) {
-  const { url, username, password, gzip, job, stats } =
-    await chrome.storage.local.get();
+async function sendData(method, { id, origin }, data) {
+  const { url, username, password, gzip, job } = options;
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
   };
@@ -128,19 +194,29 @@ async function sendData(method, id, data) {
       body: method === "POST" ? data : undefined,
     },
   );
+
+  const stats = await chrome.storage.local.get([
+    "messagesSent",
+    "bytesSent",
+    "totalTime",
+    "errors",
+  ]);
   if (data) {
-    stats.messagesSent++;
-    stats.bytesSent += data.length;
-    stats.totalTime += Date.now() - start;
+    stats.messagesSent = (stats.messagesSent || 0) + 1;
+    stats.bytesSent = (stats.bytesSent || 0) + data.length;
+    stats.totalTime = (stats.totalTime || 0) + Date.now() - start;
   }
   if (!response.ok) {
     const text = await response.text();
-    stats.errors++;
+    stats.errors = (stats.errors || 0) + 1;
     throw new Error(`Response status: ${response.status} error: ${text}`);
   }
-  await chrome.storage.local.set({ stats });
+  await chrome.storage.local.set(stats);
 
-  await setPeerConnectionLastUpdate(id, method === "POST" ? start : undefined);
+  await setPeerConnectionLastUpdate(
+    { id, origin },
+    method === "POST" ? start : undefined,
+  );
 
   return response.text();
 }
@@ -157,9 +233,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.event === "peer-connection-stats") {
     // log("peer-connection-stats", message.data);
     const { url, id, state, values } = message.data;
+    const origin = new URL(url).origin;
 
     if (state === "closed") {
-      sendData("DELETE", id)
+      sendData("DELETE", { id, origin })
         .then(() => {
           sendResponse({});
         })
@@ -213,7 +290,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       });
 
       if (data.length > 0) {
-        sendData("POST", id, data + "\n")
+        sendData("POST", { id, origin }, data + "\n")
           .then(() => {
             sendResponse({});
           })

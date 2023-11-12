@@ -13,7 +13,7 @@ const state = reactive({
 });
 
 async function loadOptions() {
-  const { enabledOrigins } = await chrome.storage.local.get("enabledOrigins");
+  const { enabledOrigins } = await chrome.storage.sync.get("enabledOrigins");
   state.enabledOrigins = enabledOrigins;
   state.enabled = !!state.enabledOrigins[state.origin];
 }
@@ -32,7 +32,7 @@ async function saveOptions(value) {
   }
 
   if (chrome.storage) {
-    await chrome.storage.local.set({ enabledOrigins: state.enabledOrigins });
+    await chrome.storage.sync.set({ enabledOrigins: state.enabledOrigins });
   }
 }
 
