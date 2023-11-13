@@ -1,5 +1,5 @@
 function log(...args) {
-  console.log.apply(null, ["[webrtc-internal-exporter-override]", ...args]);
+  console.log.apply(null, ["[webrtc-internal-exporter:override]", ...args]);
 }
 
 log("Override RTCPeerConnection.");

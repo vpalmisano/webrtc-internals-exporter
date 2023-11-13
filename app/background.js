@@ -1,7 +1,7 @@
 /* global chrome, pako, base64 */
 
 function log(...args) {
-  console.log.apply(null, ["[webrtc-internal-exporter]", ...args]);
+  console.log.apply(null, ["[webrtc-internal-exporter:background]", ...args]);
 }
 
 log("loaded");
