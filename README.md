@@ -3,12 +3,15 @@ A Chromium browser extension that allows to collect WebRTC stats and export them
 
 ## Install
 
-### Using packed extension
+### From sources
+Run the `./build.sh` script and load the `build` folder as an unpacked extension
+in your Chromium browser after enabling the developer mode.
+
+### Using the packed extension (Linux only)
 Download the `.crx` file from the [releases page](https://github.com/vpalmisano/webrtc-internals-exporter/releases) and drop it
 into the [chrome://extensions/](chrome://extensions/) page.
 
-### From sources
-Run the `./build.sh` script and load the `build` folder as an unpacked extension in your Chromium browser.
+Ref. https://developer.chrome.com/docs/extensions/mv3/hosting/
 
 ## Usage
 1. Visit the extension options page, set the PushGateway URL and, optionally, the username and password.
