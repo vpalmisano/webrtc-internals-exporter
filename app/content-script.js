@@ -34,18 +34,21 @@ function sendOptions() {
   });
 }
 
-chrome.storage.local
+chrome.storage.sync
   .get(["url", "enabledOrigins", "updateInterval", "enabledStats"])
   .then((ret) => {
     log(`options loaded:`, ret);
-    options.url = ret.url;
-    options.enabled = ret.enabledOrigins[window.location.origin] === true;
-    options.updateInterval = ret.updateInterval * 1000;
-    options.enabledStats = Object.values(ret.enabledStats);
+    options.url = ret.url || "";
+    options.enabled =
+      ret.enabledOrigins && ret.enabledOrigins[window.location.origin] === true;
+    options.updateInterval = (ret.updateInterval || 2) * 1000;
+    options.enabledStats = Object.values(ret.enabledStats || {});
     sendOptions();
   });
 
-chrome.storage.onChanged.addListener((changes) => {
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== "sync") return;
+
   let changed = false;
   for (let [key, { newValue }] of Object.entries(changes)) {
     if (key === "url") {
