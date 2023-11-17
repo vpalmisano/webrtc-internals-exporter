@@ -91,8 +91,12 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-  const tab = await chrome.tabs.get(tabId);
-  await updateTabInfo(tab);
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    await updateTabInfo(tab);
+  } catch (err) {
+    log(`get tab error: ${err.message}`);
+  }
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {

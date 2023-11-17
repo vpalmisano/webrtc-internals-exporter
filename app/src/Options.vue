@@ -10,6 +10,7 @@ const state = reactive({
   snackbar: false,
   error: "",
   info: "",
+  showPassword: false,
   //
   valid: true,
   url: "",
@@ -177,6 +178,9 @@ function removeOrigin(item) {
                   color="primary"
                   v-model="state.password"
                   label="Password"
+                  :append-icon="state.showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="state.showPassword ? 'text' : 'password'"
+                  @click:append="state.showPassword = !state.showPassword"
                   clearable
                   :error-messages="v$.password.$errors.map((e) => e.$message)"
                   @input="v$.password.$touch"

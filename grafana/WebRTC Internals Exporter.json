@@ -15,13 +15,19 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.1.2"
+      "version": "10.2.0"
     },
     {
       "type": "datasource",
       "id": "prometheus",
       "name": "Prometheus",
       "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
     },
     {
       "type": "panel",
@@ -54,12 +60,179 @@
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Timestamp"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 161
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "peerConnectionId"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 337
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 44,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "peer_connection_timestamp{pageUrl=\"$pageUrl\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Peer Connections",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "mode": "reduceFields",
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "keepLabels": [
+              "peerConnectionId",
+              "state"
+            ],
+            "mode": "columns"
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "peer_connection_timestamp": false
+            },
+            "indexByName": {},
+            "renameByName": {
+              "peerConnectionId": "",
+              "peer_connection_timestamp": "Timestamp"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "time",
+                "targetField": "Timestamp"
+              }
+            ],
+            "fields": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Timestamp"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 9
       },
       "id": 6,
       "panels": [],
@@ -77,6 +250,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -130,7 +304,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 1
+        "y": 10
       },
       "id": 8,
       "options": {
@@ -177,6 +351,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -230,7 +405,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 1
+        "y": 10
       },
       "id": 12,
       "options": {
@@ -277,6 +452,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -330,7 +506,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 1
+        "y": 10
       },
       "id": 10,
       "options": {
@@ -377,6 +553,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -433,7 +610,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 1
+        "y": 10
       },
       "id": 14,
       "options": {
@@ -481,6 +658,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -537,7 +715,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 1
+        "y": 10
       },
       "id": 39,
       "options": {
@@ -580,7 +758,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 17
       },
       "id": 5,
       "panels": [],
@@ -598,6 +776,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -651,7 +830,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 9
+        "y": 18
       },
       "id": 2,
       "options": {
@@ -698,6 +877,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -751,7 +931,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 9
+        "y": 18
       },
       "id": 13,
       "options": {
@@ -798,6 +978,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -851,7 +1032,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 9
+        "y": 18
       },
       "id": 11,
       "options": {
@@ -898,6 +1079,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -951,7 +1133,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 9
+        "y": 18
       },
       "id": 15,
       "options": {
@@ -998,6 +1180,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1051,7 +1234,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 9
+        "y": 18
       },
       "id": 19,
       "options": {
@@ -1098,6 +1281,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1151,7 +1335,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 9
+        "y": 18
       },
       "id": 20,
       "options": {
@@ -1198,6 +1382,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1251,7 +1436,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 16
+        "y": 25
       },
       "id": 16,
       "options": {
@@ -1298,6 +1483,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1351,7 +1537,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 16
+        "y": 25
       },
       "id": 18,
       "options": {
@@ -1398,6 +1584,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1451,7 +1638,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 16
+        "y": 25
       },
       "id": 17,
       "options": {
@@ -1498,6 +1685,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1551,7 +1739,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 16
+        "y": 25
       },
       "id": 21,
       "options": {
@@ -1598,6 +1786,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -1654,7 +1843,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 16
+        "y": 25
       },
       "id": 40,
       "options": {
@@ -1702,6 +1891,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -1758,7 +1948,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 16
+        "y": 25
       },
       "id": 43,
       "options": {
@@ -1807,7 +1997,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 32
       },
       "id": 7,
       "panels": [],
@@ -1825,6 +2015,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1878,7 +2069,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 24
+        "y": 33
       },
       "id": 9,
       "options": {
@@ -1925,6 +2116,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1978,7 +2170,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 24
+        "y": 33
       },
       "id": 22,
       "options": {
@@ -2025,6 +2217,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2078,7 +2271,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 24
+        "y": 33
       },
       "id": 24,
       "options": {
@@ -2125,6 +2318,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2178,7 +2372,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 24
+        "y": 33
       },
       "id": 26,
       "options": {
@@ -2226,6 +2420,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -2282,7 +2477,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 24
+        "y": 33
       },
       "id": 41,
       "options": {
@@ -2325,7 +2520,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 40
       },
       "id": 4,
       "panels": [],
@@ -2343,6 +2538,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2396,7 +2592,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 32
+        "y": 41
       },
       "id": 3,
       "options": {
@@ -2443,6 +2639,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2496,7 +2693,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 32
+        "y": 41
       },
       "id": 23,
       "options": {
@@ -2543,6 +2740,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2596,7 +2794,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 32
+        "y": 41
       },
       "id": 25,
       "options": {
@@ -2643,6 +2841,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2696,7 +2895,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 32
+        "y": 41
       },
       "id": 27,
       "options": {
@@ -2744,6 +2943,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2797,7 +2997,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 32
+        "y": 41
       },
       "id": 32,
       "options": {
@@ -2844,6 +3044,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2897,7 +3098,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 39
+        "y": 48
       },
       "id": 28,
       "options": {
@@ -2944,6 +3145,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2997,7 +3199,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 39
+        "y": 48
       },
       "id": 29,
       "options": {
@@ -3044,6 +3246,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3097,7 +3300,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 39
+        "y": 48
       },
       "id": 30,
       "options": {
@@ -3144,6 +3347,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3197,7 +3401,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 39
+        "y": 48
       },
       "id": 31,
       "options": {
@@ -3244,6 +3448,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -3300,7 +3505,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 39
+        "y": 48
       },
       "id": 42,
       "options": {
@@ -3343,7 +3548,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 46
+        "y": 55
       },
       "id": 33,
       "panels": [],
@@ -3361,6 +3566,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3414,7 +3620,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 47
+        "y": 56
       },
       "id": 35,
       "options": {
@@ -3461,6 +3667,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3514,7 +3721,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 47
+        "y": 56
       },
       "id": 37,
       "options": {
@@ -3537,7 +3744,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(data_channel_messagesSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "expr": "rate(data_channel_messagesSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3556,7 +3763,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 63
       },
       "id": 34,
       "panels": [],
@@ -3574,6 +3781,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3627,7 +3835,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 55
+        "y": 64
       },
       "id": 36,
       "options": {
@@ -3674,6 +3882,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3727,7 +3936,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 55
+        "y": 64
       },
       "id": 38,
       "options": {
@@ -3750,7 +3959,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(data_channel_messagesReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "expr": "rate(data_channel_messagesReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3766,7 +3975,6 @@
   ],
   "refresh": "5s",
   "schemaVersion": 38,
-  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
@@ -3820,13 +4028,13 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "WebRTC Internals Exporter",
   "uid": "d4c89332-e158-488c-b5ba-b7fd9b2fa7f3",
-  "version": 56,
+  "version": 60,
   "weekStart": ""
 }

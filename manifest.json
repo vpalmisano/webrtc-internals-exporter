@@ -17,8 +17,7 @@
     "alarms"
   ],
   "host_permissions": [
-    "http://*/*",
-    "https://*/*"
+
   ],
   "action": {
     "default_title": "WebRTC Internals Exporter",
