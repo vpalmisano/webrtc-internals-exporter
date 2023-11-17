@@ -179,8 +179,7 @@ async function sendData(method, { id, origin }, data) {
     "Content-Type": "application/x-www-form-urlencoded",
   };
   if (username && password) {
-    headers.Authorization =
-      "Basic " + base64.encode(`${username}:${password}}`);
+    headers.Authorization = "Basic " + btoa(`${username}:${password}`);
   }
   if (data && gzip) {
     headers["Content-Encoding"] = "gzip";
