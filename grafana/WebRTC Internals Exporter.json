@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.2.0"
+      "version": "9.3.1"
     },
     {
       "type": "datasource",
@@ -48,6 +48,12 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -71,9 +77,7 @@
           },
           "custom": {
             "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
+            "displayMode": "auto",
             "inspect": false
           },
           "mappings": [],
@@ -140,7 +144,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.2.0",
+      "pluginVersion": "9.3.1",
       "targets": [
         {
           "datasource": {
@@ -250,7 +254,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -265,7 +268,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -327,7 +329,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(outbound_rtp_bytesSent{kind=\"audio\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "expr": "rate(outbound_rtp_bytesSent{exported_job=\"$job\", kind=\"audio\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -351,7 +353,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -366,7 +367,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -428,7 +428,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "remote_inbound_rtp_fractionLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}",
+          "expr": "remote_inbound_rtp_fractionLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -452,7 +452,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -467,7 +466,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -529,7 +527,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "remote_inbound_rtp_roundTripTime{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}",
+          "expr": "remote_inbound_rtp_roundTripTime{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -553,7 +551,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -568,7 +565,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -633,7 +629,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "remote_inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}",
+          "expr": "remote_inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -658,7 +654,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -673,7 +668,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -738,7 +732,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "rate(outbound_rtp_packetsSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}[$__rate_interval])",
+          "expr": "rate(outbound_rtp_packetsSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -776,7 +770,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -791,7 +784,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -853,7 +845,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(outbound_rtp_bytesSent{kind=\"video\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "expr": "rate(outbound_rtp_bytesSent{exported_job=\"$job\", kind=\"video\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -877,7 +869,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -892,7 +883,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -954,7 +944,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "remote_inbound_rtp_fractionLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "remote_inbound_rtp_fractionLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -978,7 +968,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -993,7 +982,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1055,7 +1043,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "remote_inbound_rtp_roundTripTime{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "remote_inbound_rtp_roundTripTime{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1079,7 +1067,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1094,7 +1081,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1156,7 +1142,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "remote_inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "remote_inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1180,7 +1166,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1195,7 +1180,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1257,7 +1241,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "outbound_rtp_qualityLimitationDurations_bandwidth{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "outbound_rtp_qualityLimitationDurations_bandwidth{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1281,7 +1265,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1296,7 +1279,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1358,7 +1340,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "outbound_rtp_qualityLimitationDurations_cpu{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "outbound_rtp_qualityLimitationDurations_cpu{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1382,7 +1364,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1397,7 +1378,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1459,7 +1439,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "outbound_rtp_frameWidth{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "outbound_rtp_frameWidth{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1483,7 +1463,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1498,7 +1477,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1560,7 +1538,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "outbound_rtp_frameHeight{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "outbound_rtp_frameHeight{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1584,7 +1562,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1599,7 +1576,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1661,7 +1637,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "outbound_rtp_framesPerSecond{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "outbound_rtp_framesPerSecond{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1685,7 +1661,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1700,7 +1675,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1762,7 +1736,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "outbound_rtp_targetBitrate{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "outbound_rtp_targetBitrate{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1786,7 +1760,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -1801,7 +1774,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -1866,7 +1838,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "rate(outbound_rtp_packetsSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}[$__rate_interval])",
+          "expr": "rate(outbound_rtp_packetsSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1891,7 +1863,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -1906,7 +1877,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -1971,7 +1941,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "rate(outbound_rtp_retransmittedPacketsSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}[$__rate_interval])",
+          "expr": "rate(outbound_rtp_retransmittedPacketsSent{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2015,7 +1985,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2030,7 +1999,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2092,7 +2060,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(inbound_rtp_bytesReceived{kind=\"audio\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "expr": "rate(inbound_rtp_bytesReceived{exported_job=\"$job\", kind=\"audio\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2116,7 +2084,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2131,7 +2098,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2193,7 +2159,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}\n/ (inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"} + inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"})",
+          "expr": "inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}\n/ (inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"} + inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2217,7 +2183,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2232,7 +2197,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2294,7 +2258,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}",
+          "expr": "inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2318,7 +2282,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2333,7 +2296,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2396,7 +2358,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "inbound_rtp_jitterBufferDelay{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"} / inbound_rtp_jitterBufferEmittedCount{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}",
+          "expr": "inbound_rtp_jitterBufferDelay{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"} / inbound_rtp_jitterBufferEmittedCount{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2420,7 +2382,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -2435,7 +2396,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -2500,7 +2460,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"audio\"}[$__rate_interval])",
+          "expr": "rate(inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"audio\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2538,7 +2498,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2553,7 +2512,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2615,7 +2573,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "rate(inbound_rtp_bytesReceived{kind=\"video\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "expr": "rate(inbound_rtp_bytesReceived{exported_job=\"$job\", kind=\"video\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2639,7 +2597,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2654,7 +2611,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2716,7 +2672,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}\n/ (inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"} + inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"})",
+          "expr": "inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}\n/ (inbound_rtp_packetsLost{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"} + inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2740,7 +2696,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2755,7 +2710,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2817,7 +2771,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_jitter{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2841,7 +2795,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2856,7 +2809,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2919,7 +2871,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "inbound_rtp_jitterBufferDelay{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"} / inbound_rtp_jitterBufferEmittedCount{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_jitterBufferDelay{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"} / inbound_rtp_jitterBufferEmittedCount{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -2943,7 +2895,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -2958,7 +2909,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3020,7 +2970,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_pliCount{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_pliCount{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3044,7 +2994,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3059,7 +3008,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3121,7 +3069,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_frameWidth{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_frameWidth{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3145,7 +3093,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3160,7 +3107,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3222,7 +3168,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_frameHeight{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_frameHeight{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3246,7 +3192,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3261,7 +3206,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3323,7 +3267,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_framesPerSecond{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_framesPerSecond{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3347,7 +3291,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3362,7 +3305,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3424,7 +3366,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "inbound_rtp_totalFreezesDuration{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}",
+          "expr": "inbound_rtp_totalFreezesDuration{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3448,7 +3390,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "packets/s",
@@ -3463,7 +3404,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -3528,7 +3468,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "rate(inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", kind=\"video\"}[$__rate_interval])",
+          "expr": "rate(inbound_rtp_packetsReceived{pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\", exported_job=\"$job\", kind=\"video\"}[$__rate_interval])",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -3566,7 +3506,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3581,7 +3520,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3667,7 +3605,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3682,7 +3619,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3781,7 +3717,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3796,7 +3731,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3882,7 +3816,6 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -3897,7 +3830,6 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": 60000,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3974,10 +3906,35 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 38,
+  "schemaVersion": 37,
+  "style": "dark",
   "tags": [],
   "templating": {
     "list": [
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "definition": "label_values(peer_connection_timestamp,exported_job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": {
+          "query": "label_values(peer_connection_timestamp,exported_job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
       {
         "current": {},
         "datasource": {
@@ -4028,13 +3985,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "WebRTC Internals Exporter",
   "uid": "d4c89332-e158-488c-b5ba-b7fd9b2fa7f3",
-  "version": 60,
+  "version": 11,
   "weekStart": ""
 }
