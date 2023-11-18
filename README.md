@@ -3,6 +3,9 @@ A Chromium browser extension that allows to collect WebRTC stats and export them
 
 ## Install
 
+### Using the Chrome Web Store
+[Link](https://chromewebstore.google.com/detail/webrtc-internals-exporter/jbgkajlogkmfemdjhiiicelanbipacpa)
+
 ### Using the packed extension
 Download the `.crx` file from the [releases page](https://github.com/vpalmisano/webrtc-internals-exporter/releases) and drop it
 into the [chrome://extensions/](chrome://extensions/) page.
