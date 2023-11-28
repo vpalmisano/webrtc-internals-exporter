@@ -4,8 +4,6 @@ function log(...args) {
 
 log("Override RTCPeerConnection.");
 
-const NativeRTCPeerConnection = window.RTCPeerConnection;
-
 class WebrtcInternalExporter {
   peerConnections = new Map();
 
@@ -79,19 +77,14 @@ class WebrtcInternalExporter {
 
 const webrtcInternalExporter = new WebrtcInternalExporter();
 
-window.RTCPeerConnection = function (options) {
-  log(`RTCPeerConnection`, options);
+window.RTCPeerConnection = new Proxy(window.RTCPeerConnection, {
+  construct(target, argumentsList) {
+    log(`RTCPeerConnection`, argumentsList);
 
-  const pc = new NativeRTCPeerConnection({
-    ...options,
-  });
+    const pc = new target(...argumentsList);
 
-  webrtcInternalExporter.add(pc);
+    webrtcInternalExporter.add(pc);
 
-  return pc;
-};
-
-for (const key of Object.keys(NativeRTCPeerConnection)) {
-  window.RTCPeerConnection[key] = NativeRTCPeerConnection[key];
-}
-window.RTCPeerConnection.prototype = NativeRTCPeerConnection.prototype;
+    return pc;
+  },
+});
