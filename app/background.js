@@ -1,4 +1,4 @@
-/* global chrome, pako, base64 */
+/* global chrome, pako */
 
 function log(...args) {
   console.log.apply(null, ["[webrtc-internal-exporter:background]", ...args]);
@@ -210,11 +210,14 @@ async function sendData(method, { id, origin }, data) {
     stats.totalTime = (stats.totalTime || 0) + Date.now() - start;
   }
   if (!response.ok) {
-    const text = await response.text();
     stats.errors = (stats.errors || 0) + 1;
-    throw new Error(`Response status: ${response.status} error: ${text}`);
   }
   await chrome.storage.local.set(stats);
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Response status: ${response.status} error: ${text}`);
+  }
 
   await setPeerConnectionLastUpdate(
     { id, origin },
@@ -231,79 +234,81 @@ const QualityLimitationReasons = {
   other: 3,
 };
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // log("message:", message);
-  if (message.event === "peer-connection-stats") {
-    // log("peer-connection-stats", message.data);
-    const { url, id, state, values } = message.data;
-    const origin = new URL(url).origin;
+/**
+ * sendPeerConnectionStats
+ * @param {string} url
+ * @param {string} id
+ * @param {RTCPeerConnectionState} state
+ * @param {any} values
+ */
+async function sendPeerConnectionStats(url, id, state, values) {
+  const origin = new URL(url).origin;
 
-    if (state === "closed") {
-      sendData("DELETE", { id, origin })
-        .then(() => {
-          sendResponse({});
-        })
-        .catch((err) => {
-          sendResponse({ error: err.message });
-        });
-    } else {
-      let data = "";
-      const sentTypes = new Set();
+  if (state === "closed") {
+    return sendData("DELETE", { id, origin });
+  }
 
-      values.forEach((value) => {
-        const type = value.type.replace(/-/g, "_");
-        const labels = [`pageUrl="${url}"`];
-        const metrics = [];
+  let data = "";
+  const sentTypes = new Set();
 
-        if (value.type === "peer-connection") {
-          labels.push(`state="${state}"`);
-        }
+  values.forEach((value) => {
+    const type = value.type.replace(/-/g, "_");
+    const labels = [`pageUrl="${url}"`];
+    const metrics = [];
 
-        Object.entries(value).forEach(([key, v]) => {
-          if (typeof v === "number") {
-            metrics.push([key, v]);
-          } else if (typeof v === "object") {
-            Object.entries(v).forEach(([subkey, subv]) => {
-              if (typeof subv === "number") {
-                metrics.push([`${key}_${subkey}`, subv]);
-              }
-            });
-          } else if (
-            key === "qualityLimitationReason" &&
-            QualityLimitationReasons[v] !== undefined
-          ) {
-            metrics.push([key, QualityLimitationReasons[v]]);
-          } else if (key === "googTimingFrameInfo") {
-            // TODO
-          } else {
-            labels.push(`${key}="${v}"`);
-          }
-        });
-
-        metrics.forEach(([key, v]) => {
-          const name = `${type}_${key.replace(/-/g, "_")}`;
-          let typeDesc = "";
-
-          if (!sentTypes.has(name)) {
-            typeDesc = `# TYPE ${name} gauge\n`;
-            sentTypes.add(name);
-          }
-          data += `${typeDesc}${name}{${labels.join(",")}} ${v}\n`;
-        });
-      });
-
-      if (data.length > 0) {
-        sendData("POST", { id, origin }, data + "\n")
-          .then(() => {
-            sendResponse({});
-          })
-          .catch((err) => {
-            sendResponse({ error: err.message });
-          });
-      } else {
-        sendResponse({});
-      }
+    if (value.type === "peer-connection") {
+      labels.push(`state="${state}"`);
     }
+
+    Object.entries(value).forEach(([key, v]) => {
+      if (typeof v === "number") {
+        metrics.push([key, v]);
+      } else if (typeof v === "object") {
+        Object.entries(v).forEach(([subkey, subv]) => {
+          if (typeof subv === "number") {
+            metrics.push([`${key}_${subkey}`, subv]);
+          }
+        });
+      } else if (
+        key === "qualityLimitationReason" &&
+        QualityLimitationReasons[v] !== undefined
+      ) {
+        metrics.push([key, QualityLimitationReasons[v]]);
+      } else if (key === "googTimingFrameInfo") {
+        // TODO
+      } else {
+        labels.push(`${key}="${v}"`);
+      }
+    });
+
+    metrics.forEach(([key, v]) => {
+      const name = `${type}_${key.replace(/-/g, "_")}`;
+      let typeDesc = "";
+
+      if (!sentTypes.has(name)) {
+        typeDesc = `# TYPE ${name} gauge\n`;
+        sentTypes.add(name);
+      }
+      data += `${typeDesc}${name}{${labels.join(",")}} ${v}\n`;
+    });
+  });
+
+  if (data.length > 0) {
+    return sendData("POST", { id, origin }, data + "\n");
+  }
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.event === "peer-connection-stats") {
+    const { url, id, state, values } = message.data;
+
+    sendPeerConnectionStats(url, id, state, values)
+      .then(() => {
+        sendResponse({});
+      })
+      .catch((err) => {
+        sendResponse({ error: err.message });
+      });
   } else {
     sendResponse({ error: "unknown event" });
   }
