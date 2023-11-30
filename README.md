@@ -32,6 +32,6 @@ localStorage.setItem("webrtc-internal-exporter:debug", "true")
 The running PeerConnections objects can be manually inspected using the following
 command in the browser console:
 ```js
-> webrtcInternalExporter.peerConnections
+> webrtcInternalsExporter.peerConnections
 Map(1) {'b03c3616-3f91-42b5-85df-7dbebefae8bd' => RTCPeerConnection}
 ```

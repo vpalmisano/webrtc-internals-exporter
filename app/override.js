@@ -1,4 +1,4 @@
-class WebrtcInternalExporter {
+class WebrtcInternalsExporter {
   peerConnections = new Map();
 
   url = "";
@@ -30,7 +30,7 @@ class WebrtcInternalExporter {
   }
 
   add(pc) {
-    const id = WebrtcInternalExporter.randomId();
+    const id = WebrtcInternalsExporter.randomId();
     this.peerConnections.set(id, pc);
     pc.addEventListener("connectionstatechange", () => {
       if (pc.connectionState === "closed") {
@@ -62,7 +62,7 @@ class WebrtcInternalExporter {
           [values],
         );
       } catch (error) {
-        WebrtcInternalExporter.log(`collectStats error: ${error.message}`);
+        WebrtcInternalsExporter.log(`collectStats error: ${error.message}`);
       }
     }
 
@@ -74,15 +74,15 @@ class WebrtcInternalExporter {
   }
 }
 
-const webrtcInternalExporter = new WebrtcInternalExporter();
+const webrtcInternalsExporter = new WebrtcInternalsExporter();
 
 window.RTCPeerConnection = new Proxy(window.RTCPeerConnection, {
   construct(target, argumentsList) {
-    WebrtcInternalExporter.log(`RTCPeerConnection`, argumentsList);
+    WebrtcInternalsExporter.log(`RTCPeerConnection`, argumentsList);
 
     const pc = new target(...argumentsList);
 
-    webrtcInternalExporter.add(pc);
+    webrtcInternalsExporter.add(pc);
 
     return pc;
   },
