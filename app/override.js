@@ -1,9 +1,3 @@
-function log(...args) {
-  console.log.apply(null, ["[webrtc-internal-exporter:override]", ...args]);
-}
-
-log("Override RTCPeerConnection.");
-
 class WebrtcInternalExporter {
   peerConnections = new Map();
 
@@ -16,7 +10,6 @@ class WebrtcInternalExporter {
     window.addEventListener("message", async (message) => {
       const { event, options } = message.data;
       if (event === "webrtc-internal-exporter:options") {
-        log("options updated:", options);
         Object.assign(this, options);
       }
     });
@@ -24,14 +17,20 @@ class WebrtcInternalExporter {
     window.postMessage({ event: "webrtc-internal-exporter:ready" });
   }
 
-  randomId() {
-    return (
-      window.crypto?.randomUUID() || (2 ** 64 * Math.random()).toString(16)
-    );
+  static log(...args) {
+    console.log.apply(null, ["[webrtc-internal-exporter:override]", ...args]);
+  }
+
+  static randomId() {
+    if ("randomUUID" in window.crypto) {
+      return window.crypto.randomUUID();
+    } else {
+      return (2 ** 64 * Math.random()).toString(16);
+    }
   }
 
   add(pc) {
-    const id = this.randomId();
+    const id = WebrtcInternalExporter.randomId();
     this.peerConnections.set(id, pc);
     pc.addEventListener("connectionstatechange", () => {
       if (pc.connectionState === "closed") {
@@ -63,7 +62,7 @@ class WebrtcInternalExporter {
           [values],
         );
       } catch (error) {
-        log(`collectStats error: ${error.message}`);
+        WebrtcInternalExporter.log(`collectStats error: ${error.message}`);
       }
     }
 
@@ -79,7 +78,7 @@ const webrtcInternalExporter = new WebrtcInternalExporter();
 
 window.RTCPeerConnection = new Proxy(window.RTCPeerConnection, {
   construct(target, argumentsList) {
-    log(`RTCPeerConnection`, argumentsList);
+    WebrtcInternalExporter.log(`RTCPeerConnection`, argumentsList);
 
     const pc = new target(...argumentsList);
 
