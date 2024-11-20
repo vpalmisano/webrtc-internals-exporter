@@ -1,5 +1,7 @@
 class WebrtcInternalsExporter {
   peerConnections = new Map();
+  getUserMediaStreams = new Set();
+  getDisplayMediaStreams = new Set();
 
   url = "";
   enabled = false;
@@ -72,6 +74,14 @@ class WebrtcInternalsExporter {
       setTimeout(this.collectStats.bind(this), this.updateInterval, id);
     }
   }
+
+  addGetUserMedia(stream) {
+    this.getUserMediaStreams.add(stream);
+  }
+
+  addGetDisplayMedia(stream) {
+    this.getDisplayMediaStreams.add(stream);
+  }
 }
 
 const webrtcInternalsExporter = new WebrtcInternalsExporter();
@@ -87,3 +97,43 @@ window.RTCPeerConnection = new Proxy(window.RTCPeerConnection, {
     return pc;
   },
 });
+
+if (navigator.getUserMedia) {
+  const nativeGetUserMedia = navigator.getUserMedia.bind(navigator);
+  navigator.getUserMedia = async function (constraints, ...args) {
+    WebrtcInternalsExporter.log(`getUserMedia`, constraints, args);
+
+    const mediaStream = await nativeGetUserMedia(constraints, ...args);
+    webrtcInternalsExporter.addGetUserMedia(mediaStream);
+    return mediaStream;
+  };
+}
+
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  const nativeGetUserMedia = navigator.mediaDevices.getUserMedia.bind(
+    navigator.mediaDevices,
+  );
+  navigator.mediaDevices.getUserMedia = async function (constraints, ...args) {
+    WebrtcInternalsExporter.log(`getUserMedia`, constraints, args);
+
+    const mediaStream = await nativeGetUserMedia(constraints, ...args);
+    webrtcInternalsExporter.addGetUserMedia(mediaStream);
+    return mediaStream;
+  };
+}
+
+if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+  const nativeGetDisplayMedia = navigator.mediaDevices.getDisplayMedia.bind(
+    navigator.mediaDevices,
+  );
+  navigator.mediaDevices.getDisplayMedia = async function (
+    constraints,
+    ...args
+  ) {
+    WebrtcInternalsExporter.log(`getDisplayMedia`, constraints, args);
+
+    const mediaStream = await nativeGetDisplayMedia(constraints, ...args);
+    webrtcInternalsExporter.addGetDisplayMedia(mediaStream);
+    return mediaStream;
+  };
+}
