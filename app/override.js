@@ -10,6 +10,7 @@ class WebrtcInternalsExporter {
 
   constructor() {
     window.addEventListener("message", async (message) => {
+      if (!message?.data) return;
       const { event, options } = message.data;
       if (event === "webrtc-internal-exporter:options") {
         Object.assign(this, options);
