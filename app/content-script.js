@@ -80,6 +80,7 @@ if (window.location.protocol.startsWith("http")) {
 
     // Handle stats messages.
     window.addEventListener("message", async (message) => {
+      if (!message?.data) return;
       const { event, url, id, state, values } = message.data;
       if (event === "webrtc-internal-exporter:ready") {
         sendOptions();
