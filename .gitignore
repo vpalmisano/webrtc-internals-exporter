@@ -3,3 +3,4 @@
 build
 *.crx
 *.pem
+.DS_Store

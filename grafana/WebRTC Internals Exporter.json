@@ -61,6 +61,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
+  "id": null,
   "links": [],
   "panels": [
     {
@@ -231,12 +232,117 @@
       "type": "table"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMin": 0,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 0,
+        "y": 5
+      },
+      "id": 66,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "rate(candidate_pair_availableOutgoingBitrate{exported_job=\"$job\", nominated=\"true\", pageUrl=\"$pageUrl\", peerConnectionId=~\"$peerConnectionId\"}[$__rate_interval]) * 8",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "AvailableOutgoingBitrate",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 12
       },
       "id": 6,
       "panels": [],
@@ -310,7 +416,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 6
+        "y": 13
       },
       "id": 8,
       "options": {
@@ -415,7 +521,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 6
+        "y": 13
       },
       "id": 12,
       "options": {
@@ -520,7 +626,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 6
+        "y": 13
       },
       "id": 10,
       "options": {
@@ -628,7 +734,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 6
+        "y": 13
       },
       "id": 14,
       "options": {
@@ -737,7 +843,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 13
+        "y": 20
       },
       "id": 39,
       "options": {
@@ -846,7 +952,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 13
+        "y": 20
       },
       "id": 58,
       "options": {
@@ -955,7 +1061,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 13
+        "y": 20
       },
       "id": 59,
       "options": {
@@ -1000,7 +1106,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 27
       },
       "id": 5,
       "panels": [
@@ -2403,7 +2509,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 28
       },
       "id": 7,
       "panels": [],
@@ -2477,7 +2583,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 22
+        "y": 29
       },
       "id": 9,
       "options": {
@@ -2582,7 +2688,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 22
+        "y": 29
       },
       "id": 22,
       "options": {
@@ -2687,7 +2793,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 22
+        "y": 29
       },
       "id": 24,
       "options": {
@@ -2792,7 +2898,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 22
+        "y": 29
       },
       "id": 26,
       "options": {
@@ -2901,7 +3007,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 22
+        "y": 29
       },
       "id": 41,
       "options": {
@@ -3010,7 +3116,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 22
+        "y": 29
       },
       "id": 46,
       "options": {
@@ -3115,7 +3221,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 29
+        "y": 36
       },
       "id": 64,
       "options": {
@@ -3219,7 +3325,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 29
+        "y": 36
       },
       "id": 52,
       "options": {
@@ -3323,7 +3429,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 29
+        "y": 36
       },
       "id": 53,
       "options": {
@@ -3428,7 +3534,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 29
+        "y": 36
       },
       "id": 55,
       "options": {
@@ -3532,7 +3638,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 29
+        "y": 36
       },
       "id": 56,
       "options": {
@@ -3640,7 +3746,7 @@
         "h": 7,
         "w": 4,
         "x": 0,
-        "y": 36
+        "y": 43
       },
       "id": 61,
       "options": {
@@ -3749,7 +3855,7 @@
         "h": 7,
         "w": 4,
         "x": 4,
-        "y": 36
+        "y": 43
       },
       "id": 62,
       "options": {
@@ -3858,7 +3964,7 @@
         "h": 7,
         "w": 4,
         "x": 8,
-        "y": 36
+        "y": 43
       },
       "id": 63,
       "options": {
@@ -3963,7 +4069,7 @@
         "h": 7,
         "w": 4,
         "x": 12,
-        "y": 36
+        "y": 43
       },
       "id": 57,
       "options": {
@@ -4067,7 +4173,7 @@
         "h": 7,
         "w": 4,
         "x": 16,
-        "y": 36
+        "y": 43
       },
       "id": 54,
       "options": {
@@ -4112,7 +4218,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 50
       },
       "id": 4,
       "panels": [
@@ -5855,7 +5961,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 51
       },
       "id": 33,
       "panels": [
@@ -6079,7 +6185,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 45
+        "y": 52
       },
       "id": 34,
       "panels": [
@@ -6378,7 +6484,6 @@
   "timezone": "",
   "title": "WebRTC Internals Exporter",
   "uid": "d4c89332-e158-488c-b5ba-b7fd9b2fa7f3",
-  "version": 45,
-  "weekStart": "",
-  "id": null
+  "version": 2,
+  "weekStart": ""
 }
